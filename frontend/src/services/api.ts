@@ -7,6 +7,8 @@ import {
   Timetable,
   DashboardData,
   ConflictItem,
+  UserProfile,
+  LoginResponse,
 } from '../types';
 
 const API_BASE = '/api';
@@ -28,6 +30,20 @@ async function handleResponse<T>(res: Response): Promise<T> {
 }
 
 export const api = {
+  // Auth
+  login: async (username: string, password: string): Promise<LoginResponse> => {
+    const res = await fetch(`${API_BASE}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    return handleResponse<LoginResponse>(res);
+  },
+  getCurrentUser: async (): Promise<UserProfile> => {
+    const res = await fetch(`${API_BASE}/auth/me`);
+    return handleResponse<UserProfile>(res);
+  },
+
   // Health
   checkHealth: async () => {
     const res = await fetch(`${API_BASE}/health`);

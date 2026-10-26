@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Timetable, Exam, Room, TimeSlot } from '../types';
+import { Timetable, Exam, Room, TimeSlot, UserProfile } from '../types';
 import { api } from '../services/api';
 import { Badge } from '../components/Common/Badge';
 import {
@@ -15,12 +15,15 @@ import {
   BookOpen,
   Layers,
   FileText,
+  Lock,
 } from 'lucide-react';
 
 interface GeneratorPageProps {
   exams: Exam[];
   rooms: Room[];
   slots: TimeSlot[];
+  user?: UserProfile | null;
+  onOpenLogin?: () => void;
   onTimetableGenerated: (timetable: Timetable) => void;
   onNavigate: (tab: any) => void;
   addToast: (type: 'success' | 'warning' | 'error' | 'info', title: string, message?: string) => void;
@@ -30,6 +33,8 @@ export const GeneratorPage: React.FC<GeneratorPageProps> = ({
   exams,
   rooms,
   slots,
+  user,
+  onOpenLogin,
   onTimetableGenerated,
   onNavigate,
   addToast,
@@ -39,6 +44,48 @@ export const GeneratorPage: React.FC<GeneratorPageProps> = ({
   const [enforceLocked, setEnforceLocked] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
   const [lastResult, setLastResult] = useState<Timetable | null>(null);
+
+  // If user is not admin, restrict generation with helpful academic message
+  if (user && user.role !== 'ADMIN') {
+    return (
+      <div className="space-y-6 max-w-3xl mx-auto py-8">
+        <div className="rounded-3xl border border-amber-500/30 bg-gradient-to-b from-amber-950/20 to-slate-900/80 p-8 text-center space-y-4 backdrop-blur-xl shadow-2xl">
+          <div className="h-14 w-14 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center mx-auto shadow-lg shadow-amber-500/10">
+            <Lock className="h-7 w-7" />
+          </div>
+          <div>
+            <span className="px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              Administrative Access Only
+            </span>
+            <h2 className="text-xl font-bold text-white mt-2">
+              Controller of Examinations Portal
+            </h2>
+            <p className="mt-2 text-xs text-slate-300 max-w-lg mx-auto leading-relaxed">
+              Generating or altering the master examination schedule requires official administrative authorization. As a registered student or guest viewer, you have full access to view published timetables and room allotments.
+            </p>
+          </div>
+
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              onClick={() => onNavigate('viewer')}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all"
+            >
+              Browse Published Timetable
+            </button>
+            {onOpenLogin && (
+              <button
+                onClick={onOpenLogin}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2"
+              >
+                <span>Sign In as Admin</span>
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleGenerate = async () => {
     if (exams.length === 0) {
@@ -88,17 +135,17 @@ export const GeneratorPage: React.FC<GeneratorPageProps> = ({
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header Card */}
-      <div className="rounded-2xl border border-indigo-500/20 bg-gradient-to-b from-indigo-950/30 to-slate-900/60 p-6 backdrop-blur-xl">
+      <div className="rounded-2xl border border-slate-800 bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950/30 p-6 backdrop-blur-xl">
         <div className="flex items-center gap-3 mb-2">
-          <div className="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400">
+          <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400">
             <Cpu className="h-6 w-6" />
           </div>
           <div>
             <h1 className="text-xl font-bold text-white tracking-tight">
-              AI Timetable Generation Studio
+              Semester Examination Schedule Planner
             </h1>
             <p className="text-xs text-slate-400">
-              Formulates scheduling as a Constraint Satisfaction Problem (CSP) solved via Backtracking & Heuristics.
+              Office of the Controller of Examinations. Auto-assign dates, sessions, and venues for registered courses, strictly preventing student cohort clashes and seating overflows.
             </p>
           </div>
         </div>

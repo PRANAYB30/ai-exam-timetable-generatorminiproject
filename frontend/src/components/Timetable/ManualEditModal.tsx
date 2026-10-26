@@ -10,6 +10,7 @@ interface ManualEditModalProps {
   rooms: Room[];
   slots: TimeSlot[];
   dates: string[];
+  readOnly?: boolean;
   onSave: (data: {
     date?: string;
     slot_id?: number;
@@ -25,6 +26,7 @@ export const ManualEditModal: React.FC<ManualEditModalProps> = ({
   rooms,
   slots,
   dates,
+  readOnly = false,
   onSave,
 }) => {
   const [selectedDate, setSelectedDate] = useState<string>('');
@@ -44,11 +46,16 @@ export const ManualEditModal: React.FC<ManualEditModalProps> = ({
 
   if (!assignment) return null;
 
-  const currentRoom = rooms.find((r) => r.id === selectedRoom);
+  const currentRoom = rooms.find((r) => r.id === (readOnly ? assignment.room_id : selectedRoom));
+  const currentSlot = slots.find((s) => s.id === (readOnly ? assignment.slot_id : selectedSlot));
   const isCapacityIssue = currentRoom && currentRoom.capacity < assignment.student_count;
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (readOnly) {
+      onClose();
+      return;
+    }
     setIsSaving(true);
     try {
       await onSave({
@@ -62,6 +69,66 @@ export const ManualEditModal: React.FC<ManualEditModalProps> = ({
       setIsSaving(false);
     }
   };
+
+  if (readOnly) {
+    return (
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        title={`Exam Schedule: ${assignment.exam_code}`}
+        subtitle={`${assignment.exam_name}`}
+        maxWidth="md"
+      >
+        <div className="space-y-4">
+          <div className="p-4 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2.5 text-xs">
+            <div className="flex justify-between items-center py-1 border-b border-slate-800/80">
+              <span className="text-slate-400">Subject / Course:</span>
+              <span className="font-bold text-white text-right">{assignment.exam_name}</span>
+            </div>
+            <div className="flex justify-between items-center py-1 border-b border-slate-800/80">
+              <span className="text-slate-400">Scheduled Date:</span>
+              <span className="font-semibold text-indigo-300">{assignment.date || 'TBD'}</span>
+            </div>
+            <div className="flex justify-between items-center py-1 border-b border-slate-800/80">
+              <span className="text-slate-400">Examination Session:</span>
+              <span className="font-semibold text-white">
+                {currentSlot ? `${currentSlot.name} (${currentSlot.start_time} - ${currentSlot.end_time})` : 'Slot ' + assignment.slot_id}
+              </span>
+            </div>
+            <div className="flex justify-between items-center py-1 border-b border-slate-800/80">
+              <span className="text-slate-400">Assigned Venue:</span>
+              <span className="font-semibold text-cyan-300">
+                {currentRoom ? `${currentRoom.room_number} — ${currentRoom.name}` : assignment.room_number || 'Unassigned'}
+              </span>
+            </div>
+            <div className="flex justify-between items-center py-1 border-b border-slate-800/80">
+              <span className="text-slate-400">Enrolled Student Cohort(s):</span>
+              <span className="font-semibold text-white">{assignment.student_group_codes.join(', ')}</span>
+            </div>
+            <div className="flex justify-between items-center py-1">
+              <span className="text-slate-400">Total Seated Candidates:</span>
+              <span className="font-bold text-emerald-400">{assignment.student_count} Students</span>
+            </div>
+          </div>
+
+          <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-300 flex items-center justify-between">
+            <span>Official Academic Timetable • Read-Only Mode</span>
+            <span className="text-[11px] text-slate-400">Admin credentials required to edit</span>
+          </div>
+
+          <div className="flex justify-end pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 transition-all"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      </Modal>
+    );
+  }
 
   return (
     <Modal

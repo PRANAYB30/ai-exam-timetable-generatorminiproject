@@ -1,3 +1,20 @@
+export interface UserProfile {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  role: 'ADMIN' | 'STUDENT' | 'GUEST';
+  designation: string;
+  department: string;
+  staff_id: string;
+}
+
+export interface LoginResponse {
+  access_token: string;
+  token_type: string;
+  user: UserProfile;
+}
+
 export interface StudentGroup {
   id: number;
   code: string;

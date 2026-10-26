@@ -8,10 +8,12 @@ from backend.app.api.endpoints.config import router as config_router
 from backend.app.api.endpoints.timetables import router as timetables_router
 from backend.app.api.endpoints.dashboard import router as dashboard_router
 from backend.app.api.endpoints.demo import router as demo_router
+from backend.app.api.endpoints.auth import router as auth_router
 from backend.app.api.endpoints.import_export import router as import_router
 
 api_router = APIRouter(prefix="/api")
 
+api_router.include_router(auth_router)
 api_router.include_router(dashboard_router)
 api_router.include_router(timetables_router)
 api_router.include_router(exams_router)

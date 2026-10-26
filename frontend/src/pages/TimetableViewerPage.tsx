@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Timetable, Room, TimeSlot, StudentGroup, AssignmentItem } from '../types';
+import { Timetable, Room, TimeSlot, StudentGroup, AssignmentItem, UserProfile } from '../types';
 import { api } from '../services/api';
 import { MasterGridView } from '../components/Timetable/MasterGridView';
 import { RoomWiseView } from '../components/Timetable/RoomWiseView';
@@ -19,6 +19,7 @@ import {
   ShieldCheck,
   AlertTriangle,
   RotateCcw,
+  Lock,
 } from 'lucide-react';
 
 interface TimetableViewerPageProps {
@@ -27,6 +28,7 @@ interface TimetableViewerPageProps {
   slots: TimeSlot[];
   groups: StudentGroup[];
   dates: string[];
+  user?: UserProfile | null;
   onTimetableUpdated: (timetable: Timetable) => void;
   onNavigate: (tab: any) => void;
   addToast: (type: 'success' | 'warning' | 'error' | 'info', title: string, message?: string) => void;
@@ -38,6 +40,7 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
   slots,
   groups,
   dates,
+  user,
   onTimetableUpdated,
   onNavigate,
   addToast,
@@ -198,7 +201,14 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
           </div>
 
           {/* Action Buttons */}
-          {hasConflicts && (
+          {user?.role !== 'ADMIN' && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-slate-300">
+              <Lock className="h-3.5 w-3.5 text-slate-400" />
+              <span>Public Student View</span>
+            </div>
+          )}
+
+          {hasConflicts && user?.role === 'ADMIN' && (
             <button
               onClick={handleRepair}
               disabled={isRepairing}
@@ -308,6 +318,7 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
         rooms={rooms}
         slots={slots}
         dates={dates}
+        readOnly={user?.role !== 'ADMIN'}
         onSave={handleSaveAssignment}
       />
     </div>
