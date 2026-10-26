@@ -121,11 +121,11 @@ export const App: React.FC = () => {
       id: 0,
       name: 'Guest Student / Faculty',
       username: 'guest',
-      email: 'student@college.edu',
+      email: 'student@vit.edu.in',
       role: 'STUDENT',
       designation: 'Public Timetable Viewer',
-      department: 'Undergraduate Academic Studies',
-      staff_id: 'GUEST-STD',
+      department: 'Vidyalankar Institute of Technology (VIT)',
+      staff_id: 'VIT-STD',
     });
     setActiveTab('viewer');
     addToast('info', 'Student Viewer Mode', 'Browsing official semester schedules (Read-only).');

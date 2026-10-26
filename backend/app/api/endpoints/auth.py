@@ -28,17 +28,17 @@ DEMO_ADMIN = UserProfile(
     id=1,
     name="Dr. Ramesh K. Sharma",
     username="admin",
-    email="coe@college.edu",
+    email="coe@vit.edu.in",
     role="ADMIN",
     designation="Controller of Examinations",
-    department="Office of Academic Affairs & Examination Cell",
-    staff_id="COE-2026-04",
+    department="Vidyalankar Institute of Technology (VIT), Mumbai",
+    staff_id="VIT-COE-04",
 )
 
 @router.post("/login", response_model=LoginResponse)
 def login(payload: LoginRequest):
     # Accept standard admin credentials
-    valid_usernames = ["admin", "coe@college.edu", "admin@college.edu", "coe"]
+    valid_usernames = ["admin", "coe@vit.edu.in", "coe@college.edu", "admin@vit.edu.in", "coe"]
     valid_passwords = ["admin123", "admin", "college123", "password"]
     
     if payload.username.strip().lower() in valid_usernames and payload.password in valid_passwords:

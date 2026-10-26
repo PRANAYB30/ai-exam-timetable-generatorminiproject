@@ -1,6 +1,9 @@
-# Apex Institute of Technology & Science
-### Department of Computer Science & Engineering
+# Vidyalankar Institute of Technology (VIT), Mumbai
+### Autonomous Institute Affiliated to University of Mumbai | Approved by AICTE
+### Department of Computer Engineering / Information Technology
 ### Project-Based Learning — I (PBL-I) | Academic Year 2025–2026
+
+> *"VIT is Student First — Empowering Future-Ready Technologists"* • [www.vit.edu.in](https://www.vit.edu.in)
 
 ---
 
@@ -36,7 +39,7 @@ The portal supports distinct role permissions mirroring real university operatio
 ### 🔐 Examination Administrator (Controller of Examinations)
 The administrator holds full authority to configure, generate, lock, and audit semester timetables:
 - **Login Portal:** Available directly on launch at `http://127.0.0.1:5173`.
-- **Default Staff ID / Username:** `admin` (or `coe@college.edu`)
+- **Default Staff ID / Username:** `admin` (or `coe@vit.edu.in`)
 - **Default Password:** `admin123`
 - **Authorized Profile:** Dr. Ramesh K. Sharma, Controller of Examinations
 - **Administrative Capabilities:**
@@ -364,9 +367,11 @@ Prepare for your project presentation and lab viva with these authoritative tech
 ## 10. Authors & Acknowledgments
 
 - **Project:** AI-Based Examination Timetable Generator — PBL-I
-- **Institution:** Apex Institute of Technology & Science
-- **Department:** Computer Science & Engineering
+- **Institution:** Vidyalankar Institute of Technology (VIT), Mumbai
+- **Affiliation:** Autonomous Institute Affiliated to University of Mumbai
+- **Department:** Department of Computer Engineering / Information Technology
 - **Curriculum:** Project-Based Learning - I (5th Semester)
 - **Role Permissions:** Dr. Ramesh K. Sharma, Controller of Examinations
+- **Institutional Motto:** *"VIT is Student First — Empowering Future-Ready Technologists"*
 
 Developed as an academic project demonstrating Artificial Intelligence, Constraint Satisfaction Problems, and Modern Web Engineering.

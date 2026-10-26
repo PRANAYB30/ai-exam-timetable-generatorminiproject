@@ -125,7 +125,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             </div>
 
             <div className="pt-6 border-t border-slate-800 text-[11px] text-slate-500">
-              Department of Examinations • Ref: AITS/COE/PORTAL/2026
+              Examination Cell • Ref: VIT/COE/PORTAL/2026 • Mumbai
             </div>
           </div>
 
@@ -157,7 +157,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                       required
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
-                      placeholder="e.g. admin or coe@college.edu"
+                      placeholder="e.g. admin or coe@vit.edu.in"
                       className="w-full bg-slate-800/80 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                   </div>
@@ -250,7 +250,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
 
       {/* Footer */}
       <footer className="border-t border-slate-800/80 bg-slate-900/40 px-6 py-3 text-center text-xs text-slate-500">
-        © 2026 Apex Institute of Technology & Science — Examination Management System (EMS). Designed for academic scheduling.
+        © 2026 Vidyalankar Institute of Technology (VIT), Mumbai — Examination Management System (EMS). Autonomous Institute Affiliated to University of Mumbai.
       </footer>
     </div>
   );

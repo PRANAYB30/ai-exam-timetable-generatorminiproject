@@ -113,7 +113,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({
               )}
 
               <span className="text-xs text-slate-400 font-mono hidden sm:inline">
-                Memo Ref: AITS/COE/EXAM-CIR/2026/04
+                Memo Ref: VIT/COE/EXAM-CIR/2026/04
               </span>
             </div>
           </div>

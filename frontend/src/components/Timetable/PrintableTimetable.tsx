@@ -39,21 +39,21 @@ export const PrintableTimetable: React.FC<PrintableTimetableProps> = ({
       {/* Official Institutional Letterhead */}
       <div className="text-center border-b-2 border-slate-900 pb-5 mb-6">
         <div className="flex items-center justify-center gap-3 mb-1">
-          <div className="h-12 w-12 rounded-xl border-2 border-slate-900 flex items-center justify-center font-serif font-black text-xl tracking-tighter">
-            AITS
+          <div className="h-12 w-14 rounded-xl bg-blue-900 text-white flex items-center justify-center font-serif font-black text-xl tracking-wider">
+            VIT
           </div>
           <div>
             <h1 className="text-xl font-extrabold uppercase tracking-wide text-slate-950 font-serif">
-              Apex Institute of Technology & Science
+              Vidyalankar Institute of Technology
             </h1>
             <p className="text-[11px] font-semibold tracking-wider uppercase text-slate-700">
-              Autonomous Institution • NAAC 'A+' Accredited • Affiliated to State Technological University
+              Autonomous Institute Affiliated to University of Mumbai • Approved by AICTE
             </p>
           </div>
         </div>
 
         <div className="mt-3 pt-2 border-t border-slate-300 flex justify-between items-center text-xs text-slate-700">
-          <span>Ref No: <strong>AITS/COE/EXAM-CIR/2026/04</strong></span>
+          <span>Ref No: <strong>VIT/COE/EXAM-CIR/2026/04</strong></span>
           <span className="font-bold uppercase tracking-wider text-slate-950">
             Office of the Controller of Examinations
           </span>
@@ -143,7 +143,7 @@ export const PrintableTimetable: React.FC<PrintableTimetableProps> = ({
           </div>
           <p className="font-bold text-slate-950 text-sm">Dr. Ramesh K. Sharma</p>
           <p className="font-medium text-slate-700 text-xs">Controller of Examinations</p>
-          <p className="text-[10px] text-slate-500">Apex Institute of Technology & Science</p>
+          <p className="text-[10px] text-slate-500">Vidyalankar Institute of Technology (VIT), Mumbai</p>
         </div>
       </div>
     </div>
