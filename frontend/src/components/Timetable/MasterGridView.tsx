@@ -165,6 +165,32 @@ export const MasterGridView: React.FC<MasterGridViewProps> = ({
                                 </div>
                               </div>
 
+                              {/* Seating Occupancy Mini Meter */}
+                              {(() => {
+                                const capacity = item.room_capacity || 0;
+                                if (capacity <= 0) return null;
+                                const pct = Math.round((item.student_count / capacity) * 100);
+                                const isOver = item.student_count > capacity;
+                                return (
+                                  <div className="mt-2 pt-1.5 border-t border-slate-700/40">
+                                    <div className="flex items-center justify-between text-[10px] text-slate-400 mb-1">
+                                      <span>Venue Load:</span>
+                                      <span className={isOver ? 'text-rose-400 font-bold' : 'text-slate-300'}>
+                                        {item.student_count} / {capacity} seats ({pct}%)
+                                      </span>
+                                    </div>
+                                    <div className="w-full bg-slate-700/60 rounded-full h-1 overflow-hidden">
+                                      <div
+                                        className={`h-full rounded-full transition-all ${
+                                          isOver ? 'bg-rose-500' : pct > 85 ? 'bg-amber-400' : 'bg-emerald-400'
+                                        }`}
+                                        style={{ width: `${Math.min(pct, 100)}%` }}
+                                      />
+                                    </div>
+                                  </div>
+                                );
+                              })()}
+
                               {/* Conflict tooltip/reason */}
                               {item.has_conflict && item.conflict_reason && (
                                 <p className="mt-1.5 text-[10px] text-rose-300 bg-rose-950/60 p-1.5 rounded border border-rose-800/60">

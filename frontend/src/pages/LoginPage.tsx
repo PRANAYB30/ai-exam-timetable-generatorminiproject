@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { api } from '../services/api';
 import { UserProfile } from '../types';
+import { CollegeBrand } from '../components/Common/CollegeBrand';
 import {
   GraduationCap,
   Lock,
@@ -62,19 +63,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     <div className="min-h-screen bg-slate-950 flex flex-col justify-between text-slate-100 selection:bg-indigo-500/30 selection:text-indigo-200">
       {/* Top Academic Navigation Bar */}
       <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur-xl px-6 py-3.5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-600/20">
-            <GraduationCap className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-sm font-bold text-white tracking-tight">
-              Apex Institute of Technology & Science
-            </h1>
-            <p className="text-[11px] text-indigo-400 font-medium">
-              Office of the Controller of Examinations (Examination Cell)
-            </p>
-          </div>
-        </div>
+        <CollegeBrand size="md" showSubtitle={true} />
 
         <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400">
           <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-800 border border-slate-700">

@@ -1,16 +1,16 @@
 import React from 'react';
 import { UserProfile } from '../../types';
+import { CollegeBrand } from '../Common/CollegeBrand';
 import {
   LayoutDashboard,
   CalendarCheck,
-  Calendar,
+  CalendarDays,
   ShieldAlert,
   Brain,
   BookOpen,
   Users,
   Building2,
   Sliders,
-  GraduationCap,
   ShieldCheck,
   Lock,
 } from 'lucide-react';
@@ -42,47 +42,37 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const isAdmin = user?.role === 'ADMIN';
 
   const scheduleNavItems = [
-    { id: 'dashboard' as NavTab, label: 'Executive Dashboard', icon: LayoutDashboard },
+    { id: 'dashboard' as NavTab, label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'viewer' as NavTab, label: 'Timetable Viewer', icon: CalendarDays },
     {
       id: 'generator' as NavTab,
-      label: 'Set Exam Timetable',
+      label: 'Set Exam Schedule',
       icon: CalendarCheck,
       adminOnly: true,
       badge: 'Admin',
     },
-    { id: 'viewer' as NavTab, label: 'Official Timetable', icon: Calendar },
     {
       id: 'conflicts' as NavTab,
-      label: 'Clash & Audit Center',
+      label: 'Clash Audit',
       icon: ShieldAlert,
       count: conflictCount,
     },
-    { id: 'analytics' as NavTab, label: 'Scheduling Rationale', icon: Brain },
+    { id: 'analytics' as NavTab, label: 'AI Search Logs', icon: Brain },
   ];
 
   const registryNavItems = [
-    { id: 'exams' as NavTab, label: 'Course Curriculum', icon: BookOpen, adminOnly: true },
+    { id: 'exams' as NavTab, label: 'Exams & Courses', icon: BookOpen, adminOnly: true },
     { id: 'groups' as NavTab, label: 'Student Batches', icon: Users, adminOnly: true },
     { id: 'rooms' as NavTab, label: 'Halls & Venues', icon: Building2, adminOnly: true },
-    { id: 'config' as NavTab, label: 'Academic Policies', icon: Sliders, adminOnly: true },
+    { id: 'config' as NavTab, label: 'Policy & Dates', icon: Sliders, adminOnly: true },
   ];
 
   return (
     <aside className="w-64 flex-shrink-0 border-r border-slate-800 bg-slate-900/95 backdrop-blur-xl flex flex-col justify-between h-screen sticky top-0 print:hidden">
       <div>
         {/* University Brand Header */}
-        <div className="flex items-center gap-3 px-6 py-5 border-b border-slate-800">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-700 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-600/30">
-            <GraduationCap className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-sm font-bold text-white leading-tight">
-              Apex Institute
-            </h1>
-            <p className="text-[11px] text-indigo-400 font-semibold tracking-wide">
-              Examination Cell (CoE)
-            </p>
-          </div>
+        <div className="px-5 py-5 border-b border-slate-800">
+          <CollegeBrand size="sm" showSubtitle={true} />
         </div>
 
         {/* Section 1: Timetable Operations */}

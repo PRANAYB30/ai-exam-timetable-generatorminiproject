@@ -20,6 +20,10 @@ import {
   AlertTriangle,
   RotateCcw,
   Lock,
+  Search,
+  Filter,
+  CheckCircle2,
+  X,
 } from 'lucide-react';
 
 interface TimetableViewerPageProps {
@@ -50,6 +54,11 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
   const [isRepairing, setIsRepairing] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
 
+  // Quick Filter State (Simplifies finding a specific batch or hall)
+  const [selectedBatch, setSelectedBatch] = useState<string>('ALL');
+  const [selectedRoom, setSelectedRoom] = useState<string>('ALL');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+
   if (!timetable) {
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-dashed border-slate-800 bg-slate-900/40">
@@ -67,6 +76,29 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
       </div>
     );
   }
+
+  // Filtered assignments based on search, batch, and room
+  const filteredAssignments = timetable.assignments.filter((a) => {
+    const matchesBatch =
+      selectedBatch === 'ALL' ||
+      a.student_group_codes.some((g) => g.toLowerCase() === selectedBatch.toLowerCase());
+    const matchesRoom =
+      selectedRoom === 'ALL' ||
+      (a.room_number && a.room_number.toLowerCase() === selectedRoom.toLowerCase());
+    const matchesSearch =
+      !searchQuery.trim() ||
+      a.exam_code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      a.exam_name.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesBatch && matchesRoom && matchesSearch;
+  });
+
+  const isFiltering = selectedBatch !== 'ALL' || selectedRoom !== 'ALL' || searchQuery.trim() !== '';
+
+  const handleClearFilters = () => {
+    setSelectedBatch('ALL');
+    setSelectedRoom('ALL');
+    setSearchQuery('');
+  };
 
   const handleSaveAssignment = async (data: {
     date?: string;
@@ -126,12 +158,12 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
   const hasConflicts = timetable.hard_violations_count > 0;
 
   return (
-    <div className="space-y-6">
-      {/* Top Action Bar */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-xl print:hidden">
+    <div className="space-y-5">
+      {/* Top Academic Action Bar */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-xl shadow-xl print:hidden">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-base font-bold text-white">{timetable.name}</h1>
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <h1 className="text-base font-bold text-white tracking-tight">{timetable.name}</h1>
             <Badge
               variant={
                 timetable.status === 'SUCCESS' && !hasConflicts
@@ -142,17 +174,23 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
               }
               size="sm"
             >
-              {hasConflicts ? `${timetable.hard_violations_count} Conflicts` : 'Conflict-Free'}
+              {hasConflicts ? `${timetable.hard_violations_count} Conflicts` : '100% Conflict-Free'}
             </Badge>
+
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+              <CheckCircle2 className="h-3 w-3" />
+              <span>Official CoE Release</span>
+            </span>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Academic Term: <span className="text-indigo-400 font-medium">{timetable.academic_term}</span> • Scheduled Papers: <span className="text-white font-medium">{timetable.scheduled_exams} / {timetable.total_exams}</span> • Soft Penalty: <span className="text-cyan-400 font-mono">{timetable.soft_penalty_score}</span>
+
+          <p className="text-xs text-slate-400 mt-1">
+            Academic Term: <span className="text-indigo-400 font-medium">{timetable.academic_term}</span> • Scheduled Papers: <span className="text-white font-medium">{timetable.scheduled_exams} / {timetable.total_exams}</span> • Quality Score: <span className="text-cyan-400 font-mono font-semibold">{timetable.soft_penalty_score}</span>
           </p>
         </div>
 
         {/* View Switcher & Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* View Mode Buttons */}
+          {/* View Mode Switcher */}
           <div className="flex items-center bg-slate-800/80 p-1 rounded-xl border border-slate-700">
             <button
               onClick={() => setViewMode('master')}
@@ -174,7 +212,7 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
               }`}
             >
               <Building2 className="h-3.5 w-3.5" />
-              <span>Rooms</span>
+              <span>Venues</span>
             </button>
             <button
               onClick={() => setViewMode('groups')}
@@ -185,7 +223,7 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
               }`}
             >
               <Users className="h-3.5 w-3.5" />
-              <span>Student Groups</span>
+              <span>Batches</span>
             </button>
             <button
               onClick={() => setViewMode('table')}
@@ -204,7 +242,7 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
           {user?.role !== 'ADMIN' && (
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-slate-300">
               <Lock className="h-3.5 w-3.5 text-slate-400" />
-              <span>Public Student View</span>
+              <span>Student View (Read-Only)</span>
             </div>
           )}
 
@@ -225,7 +263,7 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all"
           >
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-            <span>Validate</span>
+            <span>Audit</span>
           </button>
 
           <a
@@ -234,16 +272,84 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all"
           >
             <Download className="h-3.5 w-3.5 text-cyan-400" />
-            <span>CSV Export</span>
+            <span>CSV</span>
           </a>
 
           <button
             onClick={handlePrint}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 hover:text-white transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-600/30 transition-all"
           >
-            <Printer className="h-3.5 w-3.5 text-indigo-400" />
-            <span>Print Report</span>
+            <Printer className="h-3.5 w-3.5" />
+            <span>Print Official Circular</span>
           </button>
+        </div>
+      </div>
+
+      {/* Interactive Quick Filter Toolbar (Simplifies viewing specific batch or venue) */}
+      <div className="p-3.5 rounded-2xl border border-slate-800 bg-slate-900/40 backdrop-blur-md flex flex-wrap items-center justify-between gap-3 text-xs print:hidden">
+        <div className="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
+          {/* Search Box */}
+          <div className="relative flex-1 min-w-[180px] max-w-xs">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search course code or name..."
+              className="w-full bg-slate-800 border border-slate-700 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+          </div>
+
+          {/* Batch Filter Dropdown */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 font-medium hidden sm:inline">Batch:</span>
+            <select
+              value={selectedBatch}
+              onChange={(e) => setSelectedBatch(e.target.value)}
+              className="bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+              <option value="ALL">All Student Batches</option>
+              {groups.map((g) => (
+                <option key={g.id} value={g.code}>
+                  {g.code} ({g.name})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Venue / Room Filter Dropdown */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-slate-400 font-medium hidden sm:inline">Venue:</span>
+            <select
+              value={selectedRoom}
+              onChange={(e) => setSelectedRoom(e.target.value)}
+              className="bg-slate-800 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+              <option value="ALL">All Venues & Halls</option>
+              {rooms.map((r) => (
+                <option key={r.id} value={r.room_number}>
+                  {r.room_number} ({r.name})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Clear Filters Button */}
+          {isFiltering && (
+            <button
+              onClick={handleClearFilters}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+            >
+              <X className="h-3 w-3" />
+              <span>Reset</span>
+            </button>
+          )}
+        </div>
+
+        {/* Filter Results Count Indicator */}
+        <div className="text-slate-400">
+          Showing <span className="font-bold text-white">{filteredAssignments.length}</span> of{' '}
+          <span className="text-slate-300">{timetable.assignments.length}</span> examinations
         </div>
       </div>
 
@@ -274,7 +380,7 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
       <div className="print:hidden">
         {viewMode === 'master' && (
           <MasterGridView
-            assignments={timetable.assignments}
+            assignments={filteredAssignments}
             dates={dates}
             slots={slots}
             onSelectAssignment={(a) => setEditingAssignment(a)}
@@ -283,7 +389,7 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
 
         {viewMode === 'rooms' && (
           <RoomWiseView
-            assignments={timetable.assignments}
+            assignments={filteredAssignments}
             rooms={rooms}
             slots={slots}
             dates={dates}
@@ -293,7 +399,7 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
 
         {viewMode === 'groups' && (
           <GroupWiseView
-            assignments={timetable.assignments}
+            assignments={filteredAssignments}
             groups={groups}
             onSelectAssignment={(a) => setEditingAssignment(a)}
           />
@@ -301,14 +407,14 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
 
         {viewMode === 'table' && (
           <TabularView
-            assignments={timetable.assignments}
+            assignments={filteredAssignments}
             onSelectAssignment={(a) => setEditingAssignment(a)}
           />
         )}
       </div>
 
-      {/* Printable Report Component */}
-      <PrintableTimetable timetable={timetable} />
+      {/* Printable Report Component (Updated with institutional circular letterhead) */}
+      <PrintableTimetable timetable={timetable} filteredBatch={selectedBatch} />
 
       {/* Manual Edit Modal */}
       <ManualEditModal
@@ -324,3 +430,5 @@ export const TimetableViewerPage: React.FC<TimetableViewerPageProps> = ({
     </div>
   );
 };
+
+export default TimetableViewerPage;

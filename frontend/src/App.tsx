@@ -222,6 +222,7 @@ export const App: React.FC = () => {
           {activeTab === 'dashboard' && (
             <DashboardPage
               data={dashboardData}
+              user={currentUser}
               onNavigate={(tab) => setActiveTab(tab)}
               onLoadDemo={handleLoadDemo}
               isLoading={isLoading}
